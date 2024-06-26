@@ -25,7 +25,6 @@
 @property (nonatomic, assign) CGFloat cancelBtnMargin;
 // 确定按钮离屏幕边缘的距离
 @property (nonatomic, assign) CGFloat doneBtnMargin;
-
 @end
 
 @implementation BRBaseView
@@ -34,13 +33,10 @@
     self.frame = self.keyView.bounds;
     // 设置子视图的宽度随着父视图变化
     self.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    
     if (!self.pickerStyle.hiddenMaskView) {
         [self addSubview:self.maskView];
     }
-    
     [self addSubview:self.alertView];
-    
     // 是否隐藏标题栏
     if (!self.pickerStyle.hiddenTitleBarView) {
         [self.alertView addSubview:self.titleBarView];
@@ -251,7 +247,9 @@
 
 #pragma mark - 确定按钮的点击事件
 - (void)clickDoneBtn {
-    [self removePickerFromView:nil];
+    if (!self.doNotAutoDisappear){
+        [self removePickerFromView:nil];
+    }
     if (self.doneBlock) {
         self.doneBlock();
     }

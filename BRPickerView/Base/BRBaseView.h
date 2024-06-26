@@ -45,6 +45,8 @@ typedef void(^BRDoneClickBlock)(void);
 /** 组件的父视图：可以传 自己获取的 keyWindow，或页面的 view */
 @property (nullable, nonatomic, strong) UIView *keyView;
 
+/**  */
+@property (nonatomic, assign) BOOL doNotAutoDisappear;
 
 /// 刷新选择器数据
 /// 应用场景：动态更新数据源、动态更新选择的值、选择器类型切换等

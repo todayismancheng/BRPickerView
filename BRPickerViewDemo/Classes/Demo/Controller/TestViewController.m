@@ -299,6 +299,7 @@ typedef NS_ENUM(NSInteger, BRTimeType) {
         {
             // 出生年月日
             BRDatePickerView *datePickerView = [[BRDatePickerView alloc]init];
+            datePickerView.doNotAutoDisappear = YES;
             datePickerView.pickerMode = BRDatePickerModeYMD;
             datePickerView.title = @"请选择年月日";
             datePickerView.selectDate = self.birthdaySelectDate;
@@ -311,12 +312,14 @@ typedef NS_ENUM(NSInteger, BRTimeType) {
             //datePickerView.nonSelectableDates = @[[NSDate br_setYear:2020 month:8 day:1], [NSDate br_setYear:2020 month:9 day:10]];
             datePickerView.keyView = self.view; // 将组件 datePickerView 添加到 self.view 上，默认是添加到 keyWindow 上
             datePickerView.resultBlock = ^(NSDate *selectDate, NSString *selectValue) {
+                //__weak typeof(datePickerView) weakDatePickerView = datePickerView;
                 self.birthdaySelectDate = selectDate;
                 self.infoModel.birthdayStr = selectValue;
                 textField.text = selectValue;
                 NSLog(@"selectValue=%@", selectValue);
                 NSLog(@"selectDate=%@", selectDate);
                 NSLog(@"---------------------------------");
+                //[weakDatePickerView dismiss];
             };
             
             // 设置年份背景
