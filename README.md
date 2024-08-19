@@ -1,11 +1,15 @@
 # BRPickerView
 
-BRPickerView 封装的是iOS中常用的选择器组件，主要包括：日期选择器（支持年月日、年月等15种日期样式选择，支持设置星期、至今等）、地址选择器（支持省市区、省市、省三种地区选择）、自定义字符串选择器（支持单列、多列、二级联动、三级联动选择）。支持自定义主题样式，适配深色模式，支持将选择器组件添加到指定容器视图。
+BRPickerView 封装的是iOS中常用的选择器组件，主要包括：**`BRDatePickerView`** 日期选择器（支持年月日、年月等15种日期样式选择，支持设置星期、至今等）、**`BRTextPickerView`** 文本选择器（支持单列、多列、省市区、省市、省、自定义多级联动选择）。支持自定义主题样式，适配深色模式，支持将选择器组件添加到指定容器视图。
 
-【说明】
+【特别说明】
 
-- 当前最新版本为： `2.8.7` 。
-- 如果不能找到最新版本，请先执行一下 `pod repo update` 更新本地仓库，待更新完成后；再执行 `pod search BRPickerView` 进行搜索，就会看到最新版本。
+>- 从 `2.9.0` 版本起新增了`BRTextPickerView` 组件，用于替代原先 `BRAddressPickerView` 和 `BRStringPickerView` 组件（这两个组件目前做了兼容，可以继续使用，后续会废弃掉，建议使用 `BRTextPickerView` 组件进行替代）
+>- 如果不能找到最新版本，请先执行一下 `pod repo update` 更新本地仓库，待更新完成后；再执行 `pod search BRPickerView` 进行搜索，就会看到最新版本。
+
+#### 📒 稀土掘金地址：https://juejin.cn/post/6844903605468676104
+
+
 
 # 效果演示
 
@@ -17,16 +21,20 @@ BRPickerView 封装的是iOS中常用的选择器组件，主要包括：日期�
 
 # 安装
 
-#### 1. CocoaPods
+#### CocoaPods
 
-1. 在 Podfile 中添加 `pod 'BRPickerView'`。
+1. 在 Podfile 中添加 `pod 'BRPickerView'`
+2. 执行 `pod install` 或 `pod update` 
+3. 导入头文件 ` #import <BRPickerView.h>`
 
-2. 执行 `pod install` 或 `pod update` 。
+>安装说明：
+>
+>**pod 'BRPickerView'** ：默认是安装全部组件（包含：`BRDatePickerView` 、 `BRTextPickerView` ，和废弃的`BRAddressPickerView` 、`BRStringPickerView` 组件），等价于：`pod 'BRPickerView/All'`
+>
+>**pod 'BRPickerView/Default'** ：仅安装`BRDatePickerView` 和 `BRTextPickerView` 组件
 
-3. 导入头文件 ` #import <BRPickerView.h>`。
 
-
-#### 2. 手动导入
+#### 手动导入
 
 1. 将与 `README.md` 同级目录下的 `BRPickerView` 文件夹拽入项目中
 
@@ -35,14 +43,14 @@ BRPickerView 封装的是iOS中常用的选择器组件，主要包括：日期�
 
 # 系统要求
 
-- iOS 8.0+
+- iOS 9.0+
 - ARC
 
 # 使用
 
-#### 1. 时间选择器：`BRDatePickerView`
+### 时间选择器：`BRDatePickerView`
 
-​	查看 BRDatePickerView.h 头文件，里面提供了两种使用方式，参见源码。
+查看 BRDatePickerView.h 头文件，里面提供了两种使用方式，参见源码。
 
 ```objective-c
 /// 日期选择器格式
@@ -202,92 +210,154 @@ for (NSInteger i = 0; i < unitArr.count; i++) {
 datePickerView.pickerHeaderView = headerView;
 ```
 
-#### 2. 地址选择器：`BRAddressPickerView`
 
-​	查看 BRAddressPickerView.h 头文件，里面提供了两种使用方式，参见源码。
 
-- 使用示例（参考Demo）：
+### 文本选择器：`BRTextPickerView`
+
+查看 BRTextPickerView.h 头文件，提供了三种类型：
 
 ```objective-c
-/// 地址选择器
-BRAddressPickerView *addressPickerView = [[BRAddressPickerView alloc]init];
-addressPickerView.pickerMode = BRAddressPickerModeArea;
-addressPickerView.title = @"请选择地区";
-//addressPickerView.selectValues = @[@"浙江省", @"杭州市", @"西湖区"];
-addressPickerView.selectIndexs = @[@10, @0, @4];
-addressPickerView.isAutoSelect = YES;
-addressPickerView.resultBlock = ^(BRProvinceModel *province, BRCityModel *city, BRAreaModel *area) {
-    NSLog(@"选择的值：%@", [NSString stringWithFormat:@"%@ %@ %@", province.name, city.name, area.name]);
+/// 文本选择器类型
+typedef NS_ENUM(NSInteger, BRTextPickerMode) {
+    /** 单列选择器 */
+    BRTextPickerComponentSingle,
+    /** 多列选择器 */
+    BRTextPickerComponentMulti,
+    /** 多列联动选择器 */
+    BRTextPickerComponentCascade
 };
-
-[addressPickerView show];
 ```
 
-- 地址选择器的3种显示类型（showType 的3个枚举值）：
+#### 1. 单列文本选择器
 
-| ![省份](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/BRAddressPickerModeProvince.png?raw=true) | ![城市](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/BRAddressPickerModeCity.png?raw=true) |
-| :----------------------------------------------------------: | :----------------------------------------------------------: |
-|              样式1：BRAddressPickerModeProvince              |                样式2：BRAddressPickerModeCity                |
-|                                                              |                                                              |
-| ![地区](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/BRAddressPickerModeArea.png?raw=true) |                                                              |
-|                样式3：BRAddressPickerModeArea                |                                                              |
-
-#### 3.  自定义字符串选择器：`BRStringPickerView`
-
-​	查看 BRStringPickerView.h 头文件，里面提供了两种使用方式，参见源码。
-
-- 使用示例（参考Demo）：
+- 使用示例：
 
 ```objective-c
-/// 1.单列字符串选择器（传字符串数组）
-BRStringPickerView *stringPickerView = [[BRStringPickerView alloc]init];
-stringPickerView.pickerMode = BRStringPickerComponentSingle;
-stringPickerView.title = @"学历";
-stringPickerView.dataSourceArr = @[@"大专以下", @"大专", @"本科", @"硕士", @"博士", @"博士后"];
-stringPickerView.selectIndex = 2;
-stringPickerView.resultModelBlock = ^(BRResultModel *resultModel) {
-    NSLog(@"选择的值：%@", resultModel.value);
+/// 单列文本选择器
+BRTextPickerView *textPickerView = [[BRTextPickerView alloc]initWithPickerMode:BRTextPickerComponentSingle];
+textPickerView.title = @"学历";
+// 设置数据源
+textPickerView.dataSourceArr = @[@"大专以下", @"大专", @"本科", @"硕士", @"博士", @"博士后"];
+textPickerView.selectIndex = self.mySelectIndex;
+textPickerView.singleResultBlock = ^(BRTextModel * _Nullable model, NSInteger index) {
+  	NSLog(@"选择的值：%@", model.text);
+    self.mySelectIndex = index;
+    textField.text = model.text;
 };
+[textPickerView show];
+```
 
-[stringPickerView show];
+- 设置数据源有3种方式
 
+```objective-c
+// 方式1：传字符串数组
+textPickerView.dataSourceArr = @[@"大专以下", @"大专", @"本科", @"硕士", @"博士", @"博士后"];
+```
 
-/// 2.单列字符串选择器（可以传模型数组）
-NSArray *infoArr = @[@{@"key": @"1001", @"value": @"无融资", @"remark": @""},
+```objective-c
+// 方式2：直接传入 plist 文件名（可以将上面的字符串数组放到本地plist文件中，如：education_data.plist）
+textPickerView.fileName = @"education_data.plist";
+```
+
+```objective-c
+// 方式3：传入一维模型数组(NSArray <BRTextModel *>*)
+NSArray *dataArr = @[@{@"code": @"1", @"text": @"大专以下"},
+                     @{@"code": @"2", @"text": @"大专"},
+                     @{@"code": @"3", @"text": @"本科"},
+                     @{@"code": @"4", @"text": @"硕士"},
+                     @{@"code": @"5", @"text": @"博士"},
+                     @{@"code": @"6", @"text": @"博士后"}];
+// 将上面数组 转为 模型数组（组件内封装的工具方法）
+NSArray<BRTextModel *> *modelArr = [NSArray br_modelArrayWithJson:dataArr mapper:nil];
+textPickerView.dataSourceArr = modelArr;
+```
+
+说明：当字典key 与 BRTextModel模型的属性不匹配时，需要指定模型属性与字典key的映射关系
+
+```objective-c
+/// 单列文本选择器
+BRTextPickerView *textPickerView = [[BRTextPickerView alloc]initWithPickerMode:BRTextPickerComponentSingle];
+textPickerView.title = @"融资情况";
+// 方式3：传入一维模型数组(NSArray <BRTextModel *>*)
+NSArray *dataArr = @[@{@"key": @"1001", @"value": @"无融资", @"remark": @""},
                      @{@"key": @"2001", @"value": @"天使轮", @"remark": @""},
                      @{@"key": @"3001", @"value": @"A轮", @"remark": @""},
                      @{@"key": @"4001", @"value": @"B轮", @"remark": @""},
                      @{@"key": @"5001", @"value": @"C轮以后", @"remark": @""},
                      @{@"key": @"6001", @"value": @"已上市", @"remark": @""}];
-NSMutableArray *modelArr = [[NSMutableArray alloc]init];
-for (NSDictionary *dic in infoArr) {
-    BRResultModel *model = [[BRResultModel alloc]init];
-    model.key = dic[@"key"];
-    model.value = dic[@"value"];
-    model.remark = dic[@"remark"];
-    [modelArr addObject:model];
-}
-BRStringPickerView *stringPickerView = [[BRStringPickerView alloc]init];
-stringPickerView.pickerMode = BRStringPickerComponentSingle;
-stringPickerView.title = @"融资情况";
-stringPickerView.dataSourceArr = [modelArr copy];
-stringPickerView.selectIndex = 2;
-stringPickerView.resultModelBlock = ^(BRResultModel *resultModel) {
-    NSLog(@"选择的索引：%@", @(resultModel.index));
-    NSLog(@"选择的值：%@", resultModel.value);
+// 指定 BRTextModel模型的属性 与 字典key 的映射关系
+NSDictionary *mapper = @{ @"code": @"key", @"text": @"value", @"extras": @"remark" };
+// 将上面数组 转为 模型数组（组件内封装的工具方法）
+NSArray<BRTextModel *> *modelArr = [NSArray br_modelArrayWithJson:dataArr mapper:mapper];
+textPickerView.dataSourceArr = modelArr;
+textPickerView.singleResultBlock = ^(BRTextModel * _Nullable model, NSInteger index) {
+  	NSLog(@"选择的值：%@", model.text);
 };
+[textPickerView show];
+```
 
-[stringPickerView show];
+- 单列文本选择器效果图：
+
+| ![自定义单列字符串](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/text_single_xueli.png?raw=true) | ![融资情况](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/text_single_rongzi.png?raw=true) |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
 
 
-/// 3.自定义多列字符串选择器
-BRStringPickerView *stringPickerView = [[BRStringPickerView alloc]init];
-stringPickerView.pickerMode = BRStringPickerComponentMulti;
-stringPickerView.title = @"自定义多列字符串";
-stringPickerView.dataSourceArr = @[@[@"01", @"02", @"03", @"04", @"05", @"06", @"07", @"08", @"09", @"10", @"11", @"12"], @[@"00", @"10", @"20", @"30", @"40", @"50"]];
-stringPickerView.isAutoSelect = YES;
-stringPickerView.resultModelArrayBlock = ^(NSArray<BRResultModel *> *resultModelArr) {
-    textField.text = [NSString stringWithFormat:@"%@:%@", resultModelArr[0].value, resultModelArr[1].value];
+
+#### 2. 多列文本选择器
+
+- 使用示例：
+
+```objective-c
+/// 多列文本选择器
+BRTextPickerView *textPickerView = [[BRTextPickerView alloc]initWithPickerMode:BRTextPickerComponentMulti];
+textPickerView.title = @"多列文本选择器";
+// 设置数据源
+textPickerView.dataSourceArr = @[@[@"语文", @"数学", @"英语"], @[@"优秀", @"良好"]];
+textPickerView.selectIndexs = self.mySelectIndexs;
+textPickerView.multiResultBlock = ^(NSArray<BRTextModel *> * _Nullable models, NSArray<NSNumber *> * _Nullable indexs) {
+		self.mySelectIndexs = indexs;
+    // 将模型数组元素的 text 属性值，通过分隔符-连接成字符串（组件内封装的工具方法）
+    NSString *selectText = [models br_joinText:@"-"];
+    NSLog(@"选择的结果：%@", selectText);
+};
+[textPickerView show];
+```
+
+- 多列文本选择器设置数据源同单列一样，也有3种方式：
+
+```objective-c
+// 方式1：多维字符串数组
+textPickerView.dataSourceArr = @[@[@"语文", @"数学", @"英语"], @[@"优秀", @"良好"]];
+```
+
+```objective-c
+// 方式2：直接传入 plist 文件名（可以将上面的数组放到本地plist文件中，如：grade_level_data.plist）
+textPickerView.fileName = @"grade_level_data.plist";
+```
+
+```objective-c
+// 方式3：传入多维模型数组
+NSArray *subjectDataArr = @[@{@"subject_id": @"11", @"subject": @"语文"}, @{@"subject_id": @"12", @"subject": @"数学"}, @{@"subject_id": @"13", @"subject": @"英语"}];
+NSArray *gradeDataArr = @[@{@"grade_id": @"1", @"grade": @"优秀"}, @{@"grade_id": @"2", @"grade": @"良好"}];
+// 将上面数组 转为 模型数组（组件内封装的工具方法）
+NSArray *subjectModelArr = [NSArray br_modelArrayWithJson:subjectDataArr mapper:@{ @"code": @"subject_id", @"text": @"subject" }];
+NSArray *gradeModelArr = [NSArray br_modelArrayWithJson:gradeDataArr mapper:@{ @"code": @"grade_id", @"text": @"grade" }];
+textPickerView.dataSourceArr = @[subjectModelArr, gradeModelArr];
+```
+
+- 另外还可以设置更多自定义样式
+
+```objective-c
+/// 多列文本选择器
+BRTextPickerView *textPickerView = [[BRTextPickerView alloc]initWithPickerMode:BRTextPickerComponentMulti];
+textPickerView.title = @"自定义多列字符串";
+textPickerView.dataSourceArr = @[@[@"01", @"02", @"03", @"04", @"05", @"06", @"07", @"08", @"09", @"10", @"11", @"12"], @[@"00", @"10", @"20", @"30", @"40", @"50"]];
+textPickerView.selectIndexs = self.mySelectIndexs;
+textPickerView.multiResultBlock = ^(NSArray<BRTextModel *> * _Nullable models, NSArray<NSNumber *> * _Nullable indexs) {
+  	self.mySelectIndexs = indexs;
+    // 将模型数组元素的 text 属性值，通过:分隔符 连接成字符串（组件内封装的工具方法）
+    NSString *selectText = [models br_joinText:@":"];
+    NSLog(@"选择的结果：%@", selectText);
 };
 
 // 设置自定义样式
@@ -303,21 +373,298 @@ customStyle.clearPickerNewStyle = NO;
 // 设置选择器中间选中行的样式
 customStyle.selectRowTextFont = [UIFont boldSystemFontOfSize:20.0f];
 customStyle.selectRowTextColor = [UIColor blueColor];
-stringPickerView.pickerStyle = customStyle;
+textPickerView.pickerStyle = customStyle;
 
-[stringPickerView show];
+[textPickerView show];
 ```
 
-- 字符串选择器效果图：
+- 多列文本选择器效果图：
 
-| ![自定义单列字符串](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/string_single.png?raw=true) | ![融资情况](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/string_rongzi.png?raw=true) |
+| ![多列文本选择器](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/text_multi_grade.png?raw=true) | ![多列文本选择器](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/text_multi_time.png?raw=true) |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
-|                       单列字符串选择器                       |                       单列字符串选择器                       |
+
+
+
+#### 3. 多列联动文本选择器
+
+- 使用示例：
+
+```objective-c
+/// 多列联动文本选择器
+BRTextPickerView *textPickerView = [[BRTextPickerView alloc]initWithPickerMode:BRTextPickerComponentCascade];
+textPickerView.title = @"多列联动文本选择器";
+NSArray *dataArr = @[
+    @{
+        @"text" : @"浙江省",
+        @"children" : @[
+            @{ @"text": @"杭州市", @"children": @[@{ @"text": @"西湖区" }, @{ @"text": @"滨江区" }] },
+            @{ @"text": @"宁波市", @"children": @[@{ @"text": @"海曙区" }, @{ @"text": @"江北区" }] },
+            @{ @"text": @"温州市", @"children": @[@{ @"text": @"鹿城区" }, @{ @"text": @"龙湾区" }] }
+      ]
+    },
+    @{
+        @"text" : @"江苏省",
+        @"children" : @[
+            @{ @"text": @"南京市", @"children": @[@{ @"text": @"玄武区" }, @{ @"text": @"秦淮区" }] },
+            @{ @"text": @"苏州市", @"children": @[@{ @"text": @"虎丘区" }, @{ @"text": @"吴中区" }] }
+      ]
+    },
+    @{
+        @"text" : @"辽宁省",
+        @"children" : @[
+            @{ @"text": @"沈阳市", @"children": @[@{ @"text": @"沈河区" }, @{ @"text": @"和平区" }] },
+            @{ @"text": @"大连市", @"children": @[@{ @"text": @"中山区" }, @{ @"text": @"金州区" }] }
+      ]
+    }
+];
+// 设置数据源：传树状结构模型数组(NSArray <BRTextModel *>*)
+textPickerView.dataSourceArr = [NSArray br_modelArrayWithJson:dataArr mapper:nil];
+textPickerView.selectIndexs = self.mySelectIndexs;
+textPickerView.multiResultBlock = ^(NSArray<BRTextModel *> * _Nullable models, NSArray<NSNumber *> * _Nullable indexs) {
+    self.mySelectIndexs = indexs;
+  	// 将模型数组元素的 text 属性值，通过-分隔符 连接成字符串（组件内封装的工具方法）
+    NSString *selectText = [models br_joinText:@"-"];
+    NSLog(@"选择的结果：%@", selectText);
+};
+[textPickerView show];
+```
+
+
+
+- 实现省、市、区/县选择（使用本地数据源：region_tree_data.json）
+
+```objective-c
+// 地区
+BRTextPickerView *textPickerView = [[BRTextPickerView alloc]initWithPickerMode:BRTextPickerComponentCascade];
+textPickerView.title = @"请选择地区";
+// 设置数据源：传入本地json文件名（可以下载Demo中的 region_tree_data.json 文件放到自己的项目中，该数据源来源于高德地图最新数据）
+textPickerView.fileName = @"region_tree_data.json";
+// 设置选择器显示的列数(即层级数)，默认是根据数据源层级动态计算显示。如：设置1则只显示前1列数据（即只显示省）；设置2则只显示前2列数据（即只显示省、市）；设置3则只显示前3列数据（即显示省、市、区）
+textPickerView.showColumnNum = 3;
+textPickerView.selectIndexs = self.addressSelectIndexs;
+textPickerView.multiResultBlock = ^(NSArray<BRTextModel *> * _Nullable models, NSArray<NSNumber *> * _Nullable indexs) {
+    self.addressSelectIndexs = indexs;
+    // 将模型数组元素的 text 属性值，通过-分隔符 连接成字符串（组件内封装的工具方法）
+    NSString *selectText = [models br_joinText:@"-"];
+    NSLog(@"选择的结果：%@", selectText);
+    textField.text = selectText;
+};
+[textPickerView show];
+```
+
+- 地址文本选择器的3种显示效果
+
+| ![地区](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/text_cascade_area.png?raw=true) | ![城市](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/text_cascade_city.png?raw=true) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 样式1：textPickerView.showColumnNum = 3;                     | 样式2：textPickerView.showColumnNum = 2;                     |
 |                                                              |                                                              |
-| ![多列字符串选择器](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/string_more.png?raw=true) |                                                              |
-|                       多列字符串选择器                       |                                                              |
+| ![省份](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/text_cascade_province.png?raw=true) |                                                              |
+| 样式3：textPickerView.showColumnNum = 1;                     |                                                              |
+
+>高德地图行政区划数据源（省、市、区/县），数据更新于2024年7月
+>
+>- 原数据：[amap_region_data.json](https://raw.githubusercontent.com/agiapp/BRPickerView/master/BRPickerViewDemo/DataFile/amap_region_data.json)
+>- 处理后的树状结构数据1：[region_tree_data.json](https://raw.githubusercontent.com/agiapp/BRPickerView/master/BRPickerViewDemo/DataFile/region_tree_data.json) （组件使用本地数据源时，需要下载的文件）
+>- 处理后的树状结构数据2：[region_list_data.json](https://raw.githubusercontent.com/agiapp/BRPickerView/master/BRPickerViewDemo/DataFile/region_list_data.json)
+
+
+
+- 处理树状结构数据
+
+```json
+{
+    "status": "1",
+    "info": "OK",
+    "districts": [
+        {
+            "adcode": "330000",
+            "name": "浙江省",
+            "districts" : [
+                { "adcode" : "330100", "name": "杭州市", "districts": [{ "adcode" : "330106", "name": "西湖区" }, { "adcode" : "330108", "name": "滨江区" }] },
+                { "adcode" : "330200", "name": "宁波市", "districts": [{ "adcode" : "330203", "name": "海曙区" }, { "adcode" : "330205", "name": "江北区" }] },
+                { "adcode" : "330300", "name": "温州市", "districts": [{ "adcode" : "330302", "name": "鹿城区" }, { "adcode" : "330303", "name": "龙湾区" }] }
+            ]
+        },
+        {
+            "adcode": "320000",
+            "name": "江苏省",
+            "districts" : [
+                { "adcode" : "320100", "name": "南京市", "districts": [{ "adcode" : "320102", "name": "玄武区" }, { "adcode" : "320104", "name": "秦淮区" }] },
+                { "adcode" : "320500", "name": "苏州市", "districts": [{ "adcode" : "320505", "name": "虎丘区" }, { "adcode" : "320506", "name": "吴中区" }] }
+            ]
+        },
+        {
+            "adcode": "210000",
+            "name": "辽宁省",
+            "districts" : [
+                { "adcode" : "210100", "name": "沈阳市", "districts": [{ "adcode" : "210103", "name": "沈河区" }, { "adcode" : "210102", "name": "和平区" }] },
+                { "adcode" : "210200", "name": "大连市", "districts": [{ "adcode" : "210202", "name": "中山区" }, { "adcode" : "210213", "name": "金州区" }] }
+            ]
+        }
+    ]
+}
+```
+
+```objective-c
+/// 多列联动文本选择器
+BRTextPickerView *textPickerView = [[BRTextPickerView alloc]initWithPickerMode:BRTextPickerComponentCascade];
+textPickerView.title = @"多列联动文本选择器";
+
+// 接收网络请求结果数据（下面省略号表示省略部分代码）
+NSArray *dataArr = ...... responseObject[@"districts"];
+// 指定 BRTextModel模型的属性 与 字典key 的映射关系
+NSDictionary *mapper = @{ @"code": @"adcode", @"text": @"name", @"children": @"districts" };
+// 将上面数组 转为 模型数组（组件内封装的工具方法）
+NSArray<BRTextModel *> *modelArr = [NSArray br_modelArrayWithJson:dataArr mapper:mapper];
+textPickerView.dataSourceArr = modelArr;
+textPickerView.multiResultBlock = ^(NSArray<BRTextModel *> * _Nullable models, NSArray<NSNumber *> * _Nullable indexs) {
+    // 将模型数组元素的 text 属性值，通过-分隔符 连接成字符串（组件内封装的工具方法）
+  	NSString *selectText = [models br_joinText:@"-"];
+    NSLog(@"选择的结果：%@", selectText);
+};
+[textPickerView show];
+```
+
+- 处理扁平结构数据
+
+```json
+{
+  "Code" : 200,
+  "Msg" : "获取成功",
+  "Result" : [
+      {
+        "ParentID" : "-1",
+        "ParentName" : "",
+        "CategoryID" : "330000",
+        "CategoryName" : "浙江省"
+      },
+      {
+        "ParentID" : "-1",
+        "ParentName" : "",
+        "CategoryID" : "320000",
+        "CategoryName" : "江苏省"
+      },
+      {
+        "ParentID" : "-1",
+        "ParentName" : "",
+        "CategoryID" : "210000",
+        "CategoryName" : "辽宁省"
+      },
+      {
+        "ParentID" : "330000",
+        "ParentName" : "浙江省",
+        "CategoryID" : "330100",
+        "CategoryName" : "杭州市"
+      },
+      {
+        "ParentID" : "330000",
+        "ParentName" : "浙江省",
+        "CategoryID" : "330200",
+        "CategoryName" : "宁波市"
+      },
+      {
+        "ParentID" : "330000",
+        "ParentName" : "浙江省",
+        "CategoryID" : "330300",
+        "CategoryName" : "温州市"
+      },
+      {
+        "ParentID" : "320000",
+        "ParentName" : "江苏省",
+        "CategoryID" : "320100",
+        "CategoryName" : "南京市"
+      },
+      {
+        "ParentID" : "320000",
+        "ParentName" : "江苏省",
+        "CategoryID" : "320500",
+        "CategoryName" : "苏州市"
+      },
+      {
+        "ParentID" : "210000",
+        "ParentName" : "辽宁省",
+        "CategoryID" : "210100",
+        "CategoryName" : "沈阳市"
+      },
+      {
+        "ParentID" : "210000",
+        "ParentName" : "辽宁省",
+        "CategoryID" : "210200",
+        "CategoryName" : "大连市"
+      }
+  ]
+}
+```
+
+```objective-c
+/// 多列联动文本选择器
+BRTextPickerView *textPickerView = [[BRTextPickerView alloc]initWithPickerMode:BRTextPickerComponentCascade];
+textPickerView.title = @"多列联动文本选择器";
+
+// 接收网络请求结果数据（下面省略号表示省略部分代码）
+NSArray *dataArr = ...... responseObject[@"Result"];
+// 指定 BRTextModel模型的属性 与 字典key 的映射关系
+NSDictionary *mapper = @{ @"parentCode": @"ParentID", @"code": @"CategoryID", @"text": @"CategoryName" };
+// 1.先将上面数组 转为 模型数组（组件内封装的工具方法）。如果数据源是多个数组，需要自己先手动组装成一个NSArray<BRTextModel *>类型的扁平结构模型数组。
+NSArray<BRTextModel *> *listModelArr = [NSArray br_modelArrayWithJson:dataArr mapper:mapper];
+// 2.将扁平结构模型数组 转成 树状结构模型数组（组件内封装的工具方法）
+NSArray<BRTextModel *> *treeModelArr = [listModelArr br_buildTreeArray];
+textPickerView.dataSourceArr = treeModelArr;
+
+textPickerView.multiResultBlock = ^(NSArray<BRTextModel *> * _Nullable models, NSArray<NSNumber *> * _Nullable indexs) {
+    // 将模型数组元素的 text 属性值，通过-分隔符 连接成字符串（组件内封装的工具方法）
+  	NSString *selectText = [models br_joinText:@"-"];
+    NSLog(@"选择的结果：%@", selectText);
+    // 获取选择模型指定属性（如：code）组成的数组（组件内封装的工具方法）
+    NSArray *selectIDs = [models br_getValueArr:@"code"];
+};
+
+// 设置选择器中间选中行的样式
+BRPickerStyle *customStyle = [[BRPickerStyle alloc]init];
+customStyle.selectRowTextFont = [UIFont boldSystemFontOfSize:20.0f];
+customStyle.selectRowTextColor = [UIColor blueColor];
+customStyle.columnWidth = 80;
+customStyle.columnSpacing = 10;
+textPickerView.pickerStyle = customStyle;
+
+[textPickerView show];
+```
+
+- 多列联动文本选择器效果图：
+
+| ![三列联动文本选择器](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/text_cascade_three.png?raw=true) | ![两列字符串选择器](https://github.com/agiapp/BRPickerView/blob/master/BRPickerViewDemo/images/text_cascade_two.png?raw=true) |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+
+
+
+补充说明：对于一些需要特殊定制弹框的应用场景，可以使用下面的方法把日期选择器/文本选择器到指定容器视图上，实现个性化的弹框需求。
+
+```objective-c
+/// 扩展一：添加选择器到指定容器视图上
+/// 应用场景：可将中间的滚轮选择器 pickerView 视图（不包含蒙层及标题栏）添加到任何自定义视图上（会自动填满容器视图），也方便自定义更多的弹框样式
+/// 补充说明：如果是自定义确定按钮，需要回调默认选择的值：只需在自定义确定按钮的点击事件方法里执行一下 doneBlock 回调（目的是去触发组件内部执行 resultBlock 回调，进而回调默认选择的值）
+/// @param view 容器视图
+- (void)addPickerToView:(nullable UIView *)view NS_REQUIRES_SUPER;
+```
+
+
 
 # 更新记录
+
+#### 2024-07-24（V2.9.1）
+
+- 新增 maxTextLines 属性
+- 取消 selectRowAnimated 属性 readonly 限制
+
+#### 2024-07-17（V2.9.0）
+
+- 新增 BRTextPickerView 文本选择组件（用于替代BRAddressPickerView、BRStringPickerView组件）
+
+#### 2024-07-02（V2.8.8）
+
+- [#310](https://github.com/agiapp/BRPickerView/issues/310) ：更新本地省市区数据源数据
+
+- [#314](https://github.com/agiapp/BRPickerView/issues/314) ：修改maskView视图命名，解决因命名冲突在iOS 18 上出现的崩溃问题
 
 #### 2024-05-28（V2.8.7）
 
